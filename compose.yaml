@@ -1,1 +1,53 @@
+networks:
+  ioniumNetwork:
+    name: ioniumNetwork
 
+services:
+  nginxService:
+    container_name: nginxContainer
+    build:
+      context: /var/www/docker/images/nginx
+      tags:
+        - nginx125:1.0
+    ports:
+      - 80:80
+    volumes:
+      - ./vhost.conf:/var/www/docker/configs/ionium.ru.nginx.conf
+      - ./www:/var/www
+    networks:
+      - ioniumNetwork
+    depends_on:
+      - phpService
+      - mysqlService
+    
+  phpService:
+    container_name: phpContainer
+    build: /var/www/docker/images/php
+    volumes:
+      - ./www:/var/www
+    networks:
+      - ioniumNetwork
+    depends_on:
+      - mysqlService
+
+  mysqlService:
+    container_name: mysqlContainer
+    image: mysql
+    volumes:
+      - ./mysql-data:/var/lib/mysql
+    environment:
+      - MYSQL_ROOT_PASSWORD=root
+    networks:
+      - ioniumNetwork
+      
+  phpmyadminService:
+    container_name: phpmyadminContainer
+    image: phpmyadmin
+    ports:
+      - 1500:80
+    environment:
+      - PMA_HOST=mysqlContainer
+    networks:
+      - ioniumNetwork
+    depends_on:
+      - mysqlService
