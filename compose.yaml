@@ -22,7 +22,7 @@ services:
     container_name: php_container
     build: /var/www/docker/images/php
     volumes:
-      - ./www:/var/www
+      - /var/www:/var/www/public_html
     networks:
       - ionium_network
     depends_on:
