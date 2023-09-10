@@ -1,74 +1,15 @@
-networks:
-  ionium_network:
-    name: ionium_network
-    driver: bridge
-
 services:
-  # Nginx
-  nginx_service:
-    container_name: nginx_container
-    build:
-      context: /var/www/docker/images
-      dockerfile: DockerfileNginx
-    working_dir: /var/www
+  webserver:
+    image: nginx:latest
     ports:
-      - "80:80"
-      - "443:443"
+      - 80:80
+      - 443:443
+    restart: always
     volumes:
-      - /var/www:/var/www
-      - './phpdocker/nginx/nginx.conf:/etc/nginx/conf.d/default.conf'
-    networks:
-      - ionium_network
-    depends_on:
-      - php_service
-      - mysql_service
-
-  # PHP
-  php_service:
-    container_name: php_container
-    build:
-      context: /var/www/docker/images
-      dockerfile: DockerfilePHP
-    restart: unless-stopped
-    tty: true
-    environment:
-        SERVICE_NAME: php_service
-        SERVICE_TAGS: dev
-    working_dir: /var/www
+      - ./nginx/conf/:/etc/nginx/conf.d/:ro
+      - ./certbot/www:/var/www/certbot/:ro
+  certbot:
+    image: certbot/certbot:latest
     volumes:
-      - '/var/www:/var/www'
-      - './phpdocker/php-fpm/php-ini-overrides.ini:/etc/php/8.1/fpm/conf.d/99-overrides.ini'
-    networks:
-      - ionium_network
-    depends_on:
-      - mysql_service
-
-  #MySQL
-  mysql_service:
-    container_name: mysql_container
-    image: mysql
-    volumes:
-      - /var/www:/var/www
-    restart: unless-stopped
-    tty: true
-    ports:
-      - '3306:3306'
-    environment:
-      - MYSQL_ROOT_PASSWORD=root
-      - MYSQL_DATABASE=ionium
-      - MYSQL_USER=admin
-      - MYSQL_PASSWORD=admin
-    networks:
-      - ionium_network
-  # phpMyAdmin
-  phpmyadmin_service:
-    container_name: phpmyadmin_container
-    image: phpmyadmin
-    ports:
-      - 1500:80
-    environment:
-      - PMA_HOST=mysql_container
-    networks:
-      - ionium_network
-    depends_on:
-      - mysql_service
+      - ./certbot/www/:/var/www/certbot/:rw
+      - ./certbot/conf/:/etc/letsencrypt/:rw
