@@ -1,41 +1,58 @@
 networks:
   ionium_network:
     name: ionium_network
+    driver: bridge
+
 services:
+  # Nginx
   nginx_service:
     container_name: nginx_container
     build:
-      context: /var/www/docker/images/nginx
-      tags:
-        - nginx125:1.0
+      context: /var/www/docker/images
+      dockerfile: DockerfileNginx
     ports:
-      - 80:80
+      - "80:80"
+      - "443:443"
     volumes:
-      - /var/www/docker/configs/nginx.conf:/etc/nginx/conf.d/default.conf
-      - /var/www:/usr/share/nginx/html
+      - /var/www:/var/www
+      - /var/www/docker/configs:/etc/nginx/conf.d
     networks:
       - ionium_network
     depends_on:
       - php_service
-      - mysql_service 
+      - mysql_service
+  # PHP
   php_service:
     container_name: php_container
-    build: /var/www/docker/images/php
-    volumes:
-      - /var/www:/usr/share/nginx/html
+    build:
+      context: /var/www/docker/images
+      dockerfile: DockerfilePHP
+    restart: unless-stopped
+    tty: true
+    environment:
+        SERVICE_NAME: php_service
+        SERVICE_TAGS: dev
+    working_dir: /var/www
     networks:
       - ionium_network
     depends_on:
       - mysql_service
+  #MySQL
   mysql_service:
     container_name: mysql_container
     image: mysql
     volumes:
-      - ./mysql-data:/var/lib/mysql
+      - ./mysql:/var/lib/mysql
+    restart: unless-stopped
+    tty: true
+    ports:
+      - "3306:3306"
     environment:
-      - MYSQL_ROOT_PASSWORD=root
+      SERVICE_NAME: mysql_service
+      SERVICE_TAGS: dev
     networks:
-      - ionium_network     
+      - ionium_network
+  # phpMyAdmin
   phpmyadmin_service:
     container_name: phpmyadmin_container
     image: phpmyadmin
