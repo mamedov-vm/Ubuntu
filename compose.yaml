@@ -1,7 +1,6 @@
 networks:
   ioniumNetwork:
     name: ioniumNetwork
-
 services:
   nginxService:
     container_name: nginxContainer
@@ -18,8 +17,7 @@ services:
       - ioniumNetwork
     depends_on:
       - phpService
-      - mysqlService
-    
+      - mysqlService 
   phpService:
     container_name: phpContainer
     build: /var/www/docker/images/php
@@ -29,7 +27,6 @@ services:
       - ioniumNetwork
     depends_on:
       - mysqlService
-
   mysqlService:
     container_name: mysqlContainer
     image: mysql
@@ -38,8 +35,7 @@ services:
     environment:
       - MYSQL_ROOT_PASSWORD=root
     networks:
-      - ioniumNetwork
-      
+      - ioniumNetwork     
   phpmyadminService:
     container_name: phpmyadminContainer
     image: phpmyadmin
