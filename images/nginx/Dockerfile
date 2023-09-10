@@ -6,7 +6,7 @@ RUN apt update \
 
 WORKDIR /app
 RUN wget https://nginx.org/download/nginx-1.25.2.tar.gz && tar -zxf nginx-1.25.2.tar.gz
-RUN git clone https://github.com/google/ngx_brotli
+RUN git clone --recursive https://github.com/google/ngx_brotli
 RUN cd nginx-1.25.2 && ./configure --with-compat --add-dynamic-module=../ngx_brotli \
     && make modules
 
