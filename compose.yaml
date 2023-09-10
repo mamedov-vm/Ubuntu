@@ -11,8 +11,8 @@ services:
     ports:
       - 80:80
     volumes:
-      - ./vhost.conf:/var/www/docker/configs/ionium.ru.nginx.conf
-      - ./www:/var/www
+      - ./nginx.conf:/etc/nginx/conf.d/default.conf
+      - ./www:/var/www/public_html
     networks:
       - ionium_network
     depends_on:
