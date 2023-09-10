@@ -16,7 +16,7 @@ services:
   # php-fpm service (based on php official image) to process our php code
   php:
     build:
-      context: ./docker/php
+      context: ./php
       dockerfile: Dockerfile
     image: laravelgis-php:latest
     # map the current directory to /var/www/app in the container (the same as for the proxy service)
