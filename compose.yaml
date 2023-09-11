@@ -5,7 +5,6 @@ services:
     container_name: "nginx"
     build:
       context: ./nginx
-      dockerfile: Dockerfile
     volumes:
       - ./nginx/conf.d/:/etc/nginx/conf.d/
       - ./:/var/www/
