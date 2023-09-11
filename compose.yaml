@@ -3,8 +3,7 @@ version: '3'
 services:
   nginx:
     container_name: "nginx"
-    build:
-      context: ./nginx
+    image: fholzer/nginx-brotli:latest
     volumes:
       - ./nginx/conf.d/:/etc/nginx/conf.d/
       - ./:/var/www/
