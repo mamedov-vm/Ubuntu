@@ -5,6 +5,8 @@
     <title>Title</title>
   </head>
   <body>
-    NGINX
+    <?php
+      print phpversion()
+    ?>
   </body>
 </html>
