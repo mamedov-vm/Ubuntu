@@ -3,15 +3,7 @@ version: '3'
 services:
   nginx:
     container_name: "nginx"
-    build:
-      context: ./nginx
-      dockerfile: Dockerfile
-    volumes:
-      - ./:/var/www/ionium.ru:cached
-      - ./nginx/nginx.conf:/etc/nginx/nginx.conf
-      - ./nginx/conf.d:/etc/nginx/conf.d
-      - ./nginx/ssl:/etc/nginx/ssl
-    working_dir: /var/www/
+    image: nginx:latest
     ports:
       - '443:443'
       - '80:80'
