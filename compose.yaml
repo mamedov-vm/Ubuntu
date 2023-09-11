@@ -4,7 +4,7 @@ services:
   nginx:
     container_name: "nginx"
     build:
-      context: ./nginx/
+      context: ./nginx
       dockerfile: Dockerfile
     volumes:
       - ./nginx/conf.d/:/etc/nginx/conf.d/
@@ -12,7 +12,10 @@ services:
     ports:
       - "443:443"
       - "80:80"
+    depends_on:
+      - php
   php:
     image: php:8.2-fpm
+    container_name: "php"
     volumes:
       - ./:/var/www/
